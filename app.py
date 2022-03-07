@@ -41,27 +41,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'fo53?c\RT29&'
 api = Api(app)
 
-# this is a decorator that is going to affect the method below it
-# it's going to run the method before the first request into this app
-# without this SQLAlchemy will just create the database file without any
-# tables in it
-@app.before_first_request
-def create_tables():
-    # the create_all method is called from the SQLAlchemy object
-    # this will create 'sqlite:///data.db' and all the tables in it unless
-    # they exist already
-    # in models.user the users table is defined
-    # in models.item the items table is defined
-    # in models.store the stores table is defined
-    # SQLAlchemy only creates the tables that it sees because it goes through
-    # imports, for example we have imported into app.py an instance of the Store
-    # class from resources.store and resources.store has imported an instance
-    # of the StoreModel class from models.store and in models.store the stores
-    # table is defined along with the columns for that table
-    # you could also import a model directly into app.py if there was no
-    # resource for that model  
-    db.create_all()
-
 # we initialise the JWT object by
 # creating the jwt variable and placing in it an instance of
 # the JWT class with 3 arguments which are app.py, the authenticate
