@@ -1,3 +1,8 @@
+# we need need to import os so we have access the the operating system's
+# environment variables
+# the operating system is the virtual environment (dyno) created by heroku
+import os
+
 from flask import Flask
 # we need to use flask_restful for our API mappings (functions that connect
 # our API to a database)
@@ -36,7 +41,15 @@ app = Flask(__name__)
 # to an application
 # we need to tell SQLAlchemy where to find the database so we say it lives
 # at the root folder of our project
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+# DATABASE_URL is the name of the variable heroku has created for us
+# os.environ.get will ask the operating system for that environment variable
+# if the app is running using heroku
+# we include the sqlite database as a second argument so it can be used if we
+# run the app locally
+# the first value is the default value
+# the app will try the default value first and if it doesn't work it will try
+# the next value 
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'fo53?c\RT29&'
 api = Api(app)
