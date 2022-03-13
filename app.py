@@ -2,6 +2,10 @@
 # environment variables
 # the operating system is the virtual environment (dyno) created by heroku
 import os
+# we need to import re so we can make an adjustment if heroku uses an outdated
+# URI scheme
+# the re module is primarily used for string searching and manipulation
+import re
 
 from flask import Flask
 # we need to use flask_restful for our API mappings (functions that connect
@@ -42,14 +46,23 @@ app = Flask(__name__)
 # we need to tell SQLAlchemy where to find the database so we say it lives
 # at the root folder of our project
 # DATABASE_URL is the name of the variable heroku has created for us
-# os.environ.get will ask the operating system for that environment variable
+# os.getenv will ask the operating system for that environment variable
 # if the app is running using heroku
 # we include the sqlite database as a second argument so it can be used if we
 # run the app locally
 # the first value is the default value
 # the app will try the default value first and if it doesn't work it will try
-# the next value 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
+# the next value
+# we need the following if statement to make an adjustment if heroku uses an
+# outdated URI scheme
+# the replace method has 3 parameters - the old value, the new value and
+# (optionally) a number specifying how many occurances of the old value you
+# want to replace (if you don't include that number it will replace all
+# occurences)
+uri = os.getenv("DATABASE_URL", "sqlite:///data.db")
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'fo53?c\RT29&'
 api = Api(app)
