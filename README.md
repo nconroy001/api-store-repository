@@ -11,4 +11,4 @@ python app.py
 
 ## Implementation
 
-This project is implemented using Flask, and is a REST API for a store.
+This project is implemented using Flask, and is a REST API for an online store. It is built using Python, Flask and SQLAlchemy.
